@@ -5,10 +5,10 @@ export type AgentDocument = HydratedDocument<Agent>;
 
 @Schema()
 export class Agent {
-  @Prop()
+  @Prop({ unique: true, required: true })
   login: string;
 
-  @Prop()
+  @Prop({ required: true })
   password: string;
 }
 

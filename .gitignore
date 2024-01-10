@@ -12,4 +12,5 @@ docker-compose.yml
 !.env.example
 
 mongo/
+mongo-test/
 
