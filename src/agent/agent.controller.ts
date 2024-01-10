@@ -9,8 +9,8 @@ export class AgentController {
   constructor(private agentService: AgentService) { }
 
   @Public()
-  @Post("/signin")
-  async signIn(@Body() dto: CreateAgentDto): Promise<TokenResponseInterface> {
+  @Post("/sing-up")
+  async signUp(@Body() dto: CreateAgentDto): Promise<TokenResponseInterface> {
     return await this.agentService.create(dto);
   }
 

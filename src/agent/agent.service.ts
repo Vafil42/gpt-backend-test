@@ -23,6 +23,12 @@ export class AgentService {
   ) { }
 
   async create(dto: CreateAgentDto): Promise<TokenResponseInterface> {
+    const existingAgent = await this.agentModel.findOne({ login: dto.login });
+
+    if (existingAgent) {
+      throw new HttpException("Agent already exists", 400);
+    }
+
     const hashPassword = await bcrypt.hash(dto.password, bcrypt.genSaltSync());
 
     const agent = new this.agentModel({
