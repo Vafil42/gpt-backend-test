@@ -9,6 +9,7 @@ node_modules/
 docker-compose.yml
 
 .env
+!.env.example
 
 mongo/
 

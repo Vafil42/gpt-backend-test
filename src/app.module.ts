@@ -4,7 +4,7 @@ import { AgentModule } from "./agent/agent.module";
 import { TokenModule } from "./token/token.module";
 import { EntryModule } from "./entry/entry.module";
 import { MongooseModule } from "@nestjs/mongoose";
-import dotenv from "dotenv";
+import * as dotenv from "dotenv";
 
 dotenv.config();
 
