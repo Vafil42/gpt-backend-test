@@ -54,7 +54,7 @@ export class AgentService {
   private async generateToken(
     payload: TokenPayloadInterface,
   ): Promise<TokenResponseInterface> {
-    const token = await this.jwtService.signAsync(payload);
+    const token = `Bearer ${await this.jwtService.signAsync(payload)}`;
 
     return { token };
   }
