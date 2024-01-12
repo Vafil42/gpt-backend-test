@@ -26,5 +26,6 @@ dotenv.config();
     },
   ],
   controllers: [AgentController],
+  exports: [AgentService],
 })
 export class AgentModule { }

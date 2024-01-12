@@ -10,6 +10,15 @@ export class Agent {
 
   @Prop({ required: true })
   password: string;
+
+  @Prop()
+  promptFirstPart: string;
+
+  @Prop()
+  promptSecondPart: string;
+
+  @Prop()
+  promptTempature: number;
 }
 
 export const AgentSchema = SchemaFactory.createForClass(Agent);
