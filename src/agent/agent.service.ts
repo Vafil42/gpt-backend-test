@@ -64,4 +64,12 @@ export class AgentService {
 
     return { token };
   }
+
+  async getAgent(login: string): Promise<Agent> {
+    const agent = await this.agentModel.findOne({ login });
+
+    if (!agent) throw new HttpException("Agent not found", 404);
+
+    return agent;
+  }
 }
