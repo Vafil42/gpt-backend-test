@@ -22,5 +22,6 @@ import { AgentModule } from "src/agent/agent.module";
     AgentModule,
   ],
   providers: [TokenService, RefreshTokenService],
+  exports: [TokenService],
 })
 export class TokenModule { }

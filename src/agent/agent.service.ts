@@ -6,6 +6,7 @@ import { CreateAgentDto } from "./dto/create-agent.dto";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 import { LoginAgentDto } from "./dto/login-agent.dto";
+import { UpdateAgentDto } from "./dto/update-agent.dto";
 
 export interface TokenResponseInterface {
   token: string;
@@ -71,5 +72,23 @@ export class AgentService {
     if (!agent) throw new HttpException("Agent not found", 404);
 
     return agent;
+  }
+
+  async updateAgent(login: string, dto: UpdateAgentDto): Promise<string> {
+    const agent = await this.agentModel.findOne({ login });
+
+    if (!agent) throw new HttpException("Incorrect agent login", 400);
+
+    if (dto.prompt) {
+      const splitedPrompt = dto.prompt.split("<message>");
+
+      agent.promptFirstPart = splitedPrompt[0];
+      agent.promptSecondPart = splitedPrompt[1];
+    }
+    if (dto.promptTempature) agent.promptTempature = dto.promptTempature;
+
+    await agent.save();
+
+    return agent.login;
   }
 }

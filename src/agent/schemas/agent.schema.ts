@@ -11,13 +11,13 @@ export class Agent {
   @Prop({ required: true })
   password: string;
 
-  @Prop()
+  @Prop({ default: null })
   promptFirstPart: string;
 
-  @Prop()
+  @Prop({ default: null })
   promptSecondPart: string;
 
-  @Prop()
+  @Prop({ default: null })
   promptTempature: number;
 }
 

@@ -5,13 +5,13 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { ContextIdFactory } from "@nestjs/core";
 import { Test } from "@nestjs/testing";
 import { TokenService } from "./token.service";
-import { Dialog } from "./schemas/dialog";
+import { Dialog, DialogDocument } from "./schemas/dialog";
 
 export const tokenTest = () =>
   describe("Token", () => {
     let app: INestApplication;
     let tokenService: TokenService;
-    let dialog: Dialog;
+    let dialog: DialogDocument;
 
     beforeAll(async () => {
       const moduleRef = await Test.createTestingModule({
@@ -38,13 +38,15 @@ export const tokenTest = () =>
     it("should create dialog", async () => {
       dialog = await tokenService.createDialog("test", "Что такое помело");
 
+      console.log(dialog);
+
       expect(dialog).toBeTruthy();
-      expect(dialog._id).toBeTruthy();
+      expect(dialog.id).toBeTruthy();
       expect(dialog.messages[1]).toBeTruthy();
     });
 
     it("should send message", async () => {
-      dialog = await tokenService.sendMessage(dialog, "test", 1.9);
+      dialog = await tokenService.sendMessage(dialog, "test");
 
       expect(dialog.messages[2].content).toBe("test");
     });
