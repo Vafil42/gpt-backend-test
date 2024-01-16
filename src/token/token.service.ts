@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Dialog } from "./schemas/dialog";
+import { Dialog, DialogDocument } from "./schemas/dialog";
 import { Model } from "mongoose";
 import { RefreshTokenService } from "./refresh.service";
 import { AgentService } from "src/agent/agent.service";
@@ -19,48 +19,42 @@ export class TokenService {
     private agentService: AgentService,
   ) { }
 
-  async getDialog(id: string, agentLogin: string): Promise<Dialog> {
+  async getDialog(id: string): Promise<DialogDocument> {
     const dialog = await this.dialogModel.findById(id);
 
     if (!dialog) throw new HttpException("Dialog not found", 404);
 
-    if (dialog.agent.login !== agentLogin)
-      throw new HttpException("Not enough permissions", 403);
-
     return dialog;
   }
 
-  async createDialog(agentLogin: string, message: string): Promise<Dialog> {
+  async createDialog(
+    agentLogin: string,
+    message: string,
+  ): Promise<DialogDocument> {
     const agent = await this.agentService.getAgent(agentLogin);
 
     const dialog = new this.dialogModel({
       agent,
     });
-    dialog.save();
+    await dialog.save();
 
-    return await this.sendMessage(dialog, message, agent.promptTempature);
+    console.log(dialog);
+
+    return await this.sendMessage(dialog, message);
   }
 
   async sendMessage(
-    dialog: Dialog,
+    dialog: DialogDocument,
     message: string,
-    tempature: number,
-  ): Promise<Dialog> {
+  ): Promise<DialogDocument> {
     const userMessage = this.genUserMessage(dialog.agent, message);
 
-    const updatedDialog = await this.dialogModel.findOneAndUpdate(
-      { _id: dialog._id },
-      {
-        messages: [...dialog.messages, { role: "user", content: userMessage }],
-      },
-      { new: true },
-    );
+    dialog.messages.push({
+      role: "user",
+      content: userMessage,
+    });
 
-    if (!updatedDialog) throw new HttpException("Dialog not found", 404);
-
-    updatedDialog.save();
-
-    console.log(updatedDialog.messages);
+    await dialog.save();
 
     const res = await this.httpService.axiosRef.request({
       method: "POST",
@@ -71,8 +65,8 @@ export class TokenService {
       },
       data: {
         model: "GigaChat:latest",
-        messages: updatedDialog.messages,
-        temperature: tempature,
+        messages: dialog.messages,
+        temperature: dialog.agent.promptTempature,
       },
     });
 
@@ -80,23 +74,24 @@ export class TokenService {
       throw new HttpException("Server unavailable", 503);
     }
 
-    const finalDialog = await this.dialogModel.findOneAndUpdate(
-      { _id: updatedDialog._id },
-      {
-        messages: [...updatedDialog.messages, res.data.choices[0].message],
-      },
-      { new: true },
-    );
+    dialog.messages.push({
+      role: "assistant",
+      content: res.data.choices[0].message.content,
+    });
 
-    if (!finalDialog) throw new HttpException("Dialog not found", 404);
+    await dialog.save();
 
-    return finalDialog;
+    return dialog;
   }
 
   private genUserMessage(agent: Agent, messages: string) {
     const message =
-      agent.promptFirstPart ?? "" + messages + (agent.promptSecondPart ?? "");
+      (agent.promptFirstPart ?? "") + messages + (agent.promptSecondPart ?? "");
 
     return message;
+  }
+
+  async deleteDialog(id: string) {
+    await this.dialogModel.findByIdAndDelete(id);
   }
 }

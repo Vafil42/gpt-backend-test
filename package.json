@@ -8,7 +8,7 @@
     "start:dev": "nest start --watch",
     "start:prod": "node .",
     "test": "jest --detectOpenHandles",
-    "test:clear-mongo": "./clear-test-db.sh && jest --detectOpenHandles"
+    "test:clear-mongo": "sh ./restart-test-db.sh && jest --detectOpenHandles"
   },
   "keywords": [],
   "author": "",

@@ -4,6 +4,7 @@ import { TokenModule } from "../token/token.module";
 import { EntryModule } from "../entry/entry.module";
 import { MongooseModule } from "@nestjs/mongoose";
 import * as dotenv from "dotenv";
+import { AgentApiModule } from "src/agent-api/agent-api.module";
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ dotenv.config();
     AgentModule,
     TokenModule,
     EntryModule,
+    AgentApiModule,
     MongooseModule.forRoot(
       `mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`,
       { user: process.env.MONGODB_USER, pass: process.env.MONGODB_PASS },
