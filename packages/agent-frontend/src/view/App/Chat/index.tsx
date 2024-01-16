@@ -74,6 +74,7 @@ export default observer(() => {
           }
           style={{ position: "relative", top: -30 }}
           placeholder="Start typing..."
+          onPressEnter={() => handleSubmit(message)}
         />
       </Flex>
     </Flex>

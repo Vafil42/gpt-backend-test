@@ -24,8 +24,6 @@ export class TokenService {
       populate: ["agent", "messages"],
     });
 
-    console.log(dialog);
-
     if (!dialog) throw new HttpException("Dialog not found", 404);
 
     return dialog;
@@ -41,8 +39,6 @@ export class TokenService {
       agent,
     });
     await dialog.save();
-
-    console.log(dialog);
 
     return await this.sendMessage(dialog, message);
   }
