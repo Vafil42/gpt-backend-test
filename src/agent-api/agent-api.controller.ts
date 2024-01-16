@@ -20,12 +20,16 @@ export class AgentApiController {
   constructor(private agentApiService: AgentApiService) { }
 
   @Get()
-  async getAgent(@Req() req: Request): Promise<Agent> {
+  async getAgent(@Req() req: Request) {
     return await this.agentApiService.getAgent(req.agentLogin);
   }
 
   @Patch()
-  async updateAgent(@Req() req: Request, dto: UpdateAgentDto): Promise<string> {
+  async updateAgent(
+    @Req() req: Request,
+    @Body() dto: UpdateAgentDto,
+  ): Promise<string> {
+    console.log(dto);
     return await this.agentApiService.updateAgent(req.agentLogin, dto);
   }
 
@@ -38,26 +42,35 @@ export class AgentApiController {
   }
 
   @Post("dialog")
-  async createDialog(
-    @Req() req: Request,
-    @Body() body: MessageDto,
-  ): Promise<Dialog> {
-    return await this.agentApiService.createDialog(
+  async createDialog(@Req() req: Request, @Body() body: MessageDto) {
+    const dialog = await this.agentApiService.createDialog(
       req.agentLogin,
       body.message,
     );
+
+    return {
+      messages: dialog.messages,
+      id: dialog.id,
+    };
   }
 
-  @Post("dialog/[id]/message")
+  @Post("dialog/:id/message")
   async sendMessage(
     @Req() req: Request,
     @Param("id") id: string,
     @Body() body: MessageDto,
-  ): Promise<Dialog> {
-    return await this.agentApiService.sendMessage(
+  ) {
+    const dialog = await this.agentApiService.sendMessage(
       id,
       body.message,
       req.agentLogin,
     );
+
+    return {
+      messages: dialog.messages.map((message) => ({
+        role: message.role,
+        content: message.content,
+      })),
+    };
   }
 }

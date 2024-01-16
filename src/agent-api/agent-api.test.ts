@@ -52,8 +52,7 @@ export const agentApiTest = () =>
 
       expect(login).toBe("agent-test");
       expect(agent.promptTempature).toBe(1.0);
-      expect(agent.promptFirstPart).toBe("U receive message ");
-      expect(agent.promptSecondPart).toBe(". What will u do?");
+      expect(agent.prompt).toBe("U receive message <message>. What will u do?");
     });
 
     it("should create dialog", async () => {
