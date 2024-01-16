@@ -1,11 +1,11 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class UpdateAgentDto {
   @IsString()
   @IsOptional()
   prompt?: string;
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
   promptTempature?: number;
 }

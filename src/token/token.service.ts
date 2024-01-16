@@ -20,7 +20,9 @@ export class TokenService {
   ) { }
 
   async getDialog(id: string): Promise<DialogDocument> {
-    const dialog = await this.dialogModel.findById(id);
+    const dialog = await this.dialogModel.findById(id, null, {
+      populate: ["agent", "messages"],
+    });
 
     if (!dialog) throw new HttpException("Dialog not found", 404);
 
@@ -38,8 +40,6 @@ export class TokenService {
     });
     await dialog.save();
 
-    console.log(dialog);
-
     return await this.sendMessage(dialog, message);
   }
 
@@ -47,11 +47,11 @@ export class TokenService {
     dialog: DialogDocument,
     message: string,
   ): Promise<DialogDocument> {
-    const userMessage = this.genUserMessage(dialog.agent, message);
+    console.log(dialog);
 
     dialog.messages.push({
       role: "user",
-      content: userMessage,
+      content: message,
     });
 
     await dialog.save();
@@ -65,7 +65,19 @@ export class TokenService {
       },
       data: {
         model: "GigaChat:latest",
-        messages: dialog.messages,
+        messages: dialog.messages.map((message) => {
+          if (message.role === "user") {
+            return {
+              role: "user",
+              content: this.genUserMessage(dialog.agent, message.content),
+            };
+          }
+
+          return {
+            role: "assistant",
+            content: message.content,
+          };
+        }),
         temperature: dialog.agent.promptTempature,
       },
     });

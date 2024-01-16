@@ -11,7 +11,15 @@ export class AgentApiService {
   ) { }
 
   async getAgent(login: string) {
-    return await this.agentService.getAgent(login);
+    const agent = await this.agentService.getAgent(login);
+
+    return {
+      prompt:
+        (agent.promptFirstPart || "") +
+        "<message>" +
+        (agent.promptSecondPart || ""),
+      promptTempature: agent.promptTempature,
+    };
   }
 
   async updateAgent(login: string, dto: UpdateAgentDto) {
@@ -39,6 +47,6 @@ export class AgentApiService {
       throw new HttpException("Unauthorized", 401);
     }
 
-    return await this.tokenService.sendMessage(dialog.id, message);
+    return await this.tokenService.sendMessage(dialog, message);
   }
 }
