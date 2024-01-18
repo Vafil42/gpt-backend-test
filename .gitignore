@@ -1,4 +1,4 @@
-mongo
-mongo-test
+/mongo
+/mongo-test
 
 docker-compose.yml

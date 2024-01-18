@@ -23,7 +23,7 @@ export class DialogStore {
     }
 
     const res = await fetch(
-      `http://localhost:8080/agent-api/dialog/${this.id}/message`,
+      import.meta.env.BASE_URL + `api/agent-api/dialog/${this.id}/message`,
       {
         method: "POST",
         headers: {
@@ -46,7 +46,7 @@ export class DialogStore {
   };
 
   create = async (message: string, auth: string) => {
-    const res = await fetch("http://localhost:8080/agent-api/dialog", {
+    const res = await fetch(import.meta.env.BASE_URL + "api/agent-api/dialog", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -67,7 +67,7 @@ export class DialogStore {
   };
 
   clear = async (auth: string) => {
-    await fetch(`http://localhost:8080/agent-api/dialog/${this.id}`, {
+    await fetch(import.meta.env.BASE_URL + `api/agent-api/dialog/${this.id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

@@ -12,7 +12,7 @@ export class AuthStore {
   setPassword = (value: string) => (this.password = value);
 
   auth = async () => {
-    const res = await fetch("http://localhost:8080/auth/login", {
+    const res = await fetch(import.meta.env.BASE_URL + "api/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
