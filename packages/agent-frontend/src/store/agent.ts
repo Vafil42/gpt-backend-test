@@ -15,7 +15,7 @@ export class AgentStore {
   setPromptTempature = (value: number) => (this.data!.promptTempature = value);
 
   loadAgent = async (auth: string) => {
-    const res = await fetch("http://localhost:8080/agent-api", {
+    const res = await fetch(import.meta.env.BASE_URL + "api/agent-api", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -32,7 +32,7 @@ export class AgentStore {
   };
 
   editAgent = async (auth: string) => {
-    const res = await fetch("http://localhost:8080/agent-api", {
+    const res = await fetch(import.meta.env.BASE_URL + "api/agent-api", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
