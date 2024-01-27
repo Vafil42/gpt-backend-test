@@ -1,0 +1,21 @@
+{
+  "name": "gpt-backend-test",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "install": "cd packages/backend && npm install && cd ../agent-frontend && npm install",
+    "dev:backend": "cd packages/backend && npm run start:dev",
+    "dev:frontend": "cd packages/agent-frontend && npm run dev",
+    "dev:mongo": "docker run -d --name mongo mongo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vafil42/gpt-backend-test.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Vafil42/gpt-backend-test/issues"
+  },
+  "homepage": "https://github.com/Vafil42/gpt-backend-test#readme"
+}
