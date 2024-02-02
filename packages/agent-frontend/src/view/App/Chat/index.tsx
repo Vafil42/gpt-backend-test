@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { SendOutlined } from "@ant-design/icons";
 import { MainContext } from "..";
 import { useCallback, useContext, useState } from "react";
-import { useCookies } from "react-cookie";
+import { useAuth } from "../../../hooks/useAuth";
 
 export default observer(() => {
   const { data, addMessage, clear } = useContext(MainContext)!.dialogStore;
@@ -11,23 +11,23 @@ export default observer(() => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const [cookies] = useCookies(["auth"]);
+  const auth = useAuth();
 
   const handleSubmit = useCallback(
     async (message: string) => {
       setMessage("");
       setLoading(true);
-      await addMessage(message, cookies.auth!.token);
+      await addMessage(message, auth.token);
       setLoading(false);
     },
-    [addMessage, cookies.auth],
+    [addMessage, auth],
   );
 
   const handleClear = useCallback(async () => {
     setLoading(true);
-    await clear(cookies.auth!.token);
+    await clear(auth.token);
     setLoading(false);
-  }, [clear, cookies.auth]);
+  }, [clear, auth]);
 
   return (
     <Flex vertical style={{ width: 600 }}>

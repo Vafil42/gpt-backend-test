@@ -17,7 +17,7 @@ export class TokenService {
     private httpService: HttpService,
     private refreshTokenService: RefreshTokenService,
     private agentService: AgentService,
-  ) { }
+  ) {}
 
   async getDialog(id: string): Promise<DialogDocument> {
     const dialog = await this.dialogModel.findById(id, null, {
@@ -25,6 +25,30 @@ export class TokenService {
     });
 
     if (!dialog) throw new HttpException("Dialog not found", 404);
+
+    return dialog;
+  }
+
+  async getDialogWithUserId(
+    userId: string,
+    agentLogin: string,
+  ): Promise<DialogDocument> {
+    let dialog = await this.dialogModel.findOne({ userId }, null, {
+      populate: ["agent", "messages"],
+    });
+
+    if (!dialog) {
+      const agent = await this.agentService.getAgent(agentLogin);
+
+      dialog = new this.dialogModel({
+        agent,
+        userId,
+      });
+      await dialog.save();
+    }
+
+    if (dialog.agent.login !== agentLogin)
+      throw new HttpException("Unauthorised", 401);
 
     return dialog;
   }
@@ -47,8 +71,6 @@ export class TokenService {
     dialog: DialogDocument,
     message: string,
   ): Promise<DialogDocument> {
-    console.log(dialog);
-
     dialog.messages.push({
       role: "user",
       content: message,

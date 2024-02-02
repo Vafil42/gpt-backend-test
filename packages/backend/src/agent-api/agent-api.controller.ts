@@ -17,7 +17,7 @@ import { Agent } from "src/agent/schemas/agent.schema";
 
 @Controller("agent-api")
 export class AgentApiController {
-  constructor(private agentApiService: AgentApiService) { }
+  constructor(private agentApiService: AgentApiService) {}
 
   @Get()
   async getAgent(@Req() req: Request) {
@@ -25,15 +25,13 @@ export class AgentApiController {
   }
 
   @Patch()
-  async updateAgent(
-    @Req() req: Request,
-    @Body() dto: UpdateAgentDto,
-  ): Promise<string> {
-    console.log(dto);
-    return await this.agentApiService.updateAgent(req.agentLogin, dto);
+  async updateAgent(@Req() req: Request, @Body() dto: UpdateAgentDto) {
+    const login = await this.agentApiService.updateAgent(req.agentLogin, dto);
+
+    return { login };
   }
 
-  @Delete("dialog/[id]")
+  @Delete("dialog/:id")
   async deleteDialog(
     @Req() req: Request,
     @Param("id") id: string,
