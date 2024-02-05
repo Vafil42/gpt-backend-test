@@ -14,3 +14,7 @@ docker-compose.yml
 mongo/
 mongo-test/
 
+
+.flaskenv*
+!.env.project
+!.env.vault
