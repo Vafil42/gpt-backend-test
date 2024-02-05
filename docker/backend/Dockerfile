@@ -12,7 +12,6 @@ workdir /home/node/app
 copy package*.json ./
 run npm install --omit=dev
 copy --from=build /home/node/app/dist ./dist
-add ./.env .
 
-expose 8080 27017
+expose 8080 
 cmd ["node", "dist/src/main.js"]

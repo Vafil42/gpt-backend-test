@@ -6,4 +6,5 @@ jest.config.js
 **.test.ts
 **.spec.ts
 
-.env
+.env*
+

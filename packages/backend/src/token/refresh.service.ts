@@ -8,11 +8,11 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Secret } from "./schemas/secret";
 import { Model } from "mongoose";
 import { v4 as uuidv4 } from "uuid";
-import * as dotenv from "dotenv";
 import { HttpService } from "@nestjs/axios";
 import { Interval } from "@nestjs/schedule";
+import { config } from "../common/dotenv";
 
-dotenv.config();
+config();
 
 @Injectable()
 export class RefreshTokenService implements OnApplicationBootstrap {

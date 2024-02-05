@@ -3,10 +3,10 @@ import { AgentModule } from "../agent/agent.module";
 import { TokenModule } from "../token/token.module";
 import { EntryModule } from "../entry/entry.module";
 import { MongooseModule } from "@nestjs/mongoose";
-import * as dotenv from "dotenv";
 import { AgentApiModule } from "src/agent-api/agent-api.module";
+import { config } from "../common/dotenv";
 
-dotenv.config();
+config();
 
 @Module({
   imports: [

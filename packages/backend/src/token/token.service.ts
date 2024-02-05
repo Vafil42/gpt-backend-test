@@ -7,8 +7,8 @@ import { AgentService } from "src/agent/agent.service";
 import { Agent } from "src/agent/schemas/agent.schema";
 import { HttpService } from "@nestjs/axios";
 
-import * as dotenv from "dotenv";
-dotenv.config();
+import { config } from "../common/dotenv";
+config();
 
 @Injectable()
 export class TokenService {
@@ -17,7 +17,7 @@ export class TokenService {
     private httpService: HttpService,
     private refreshTokenService: RefreshTokenService,
     private agentService: AgentService,
-  ) {}
+  ) { }
 
   async getDialog(id: string): Promise<DialogDocument> {
     const dialog = await this.dialogModel.findById(id, null, {

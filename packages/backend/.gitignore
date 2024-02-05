@@ -8,8 +8,8 @@ node_modules/
 
 docker-compose.yml
 
-.env
-!.env.example
+.env*
+!.env.example*
 
 mongo/
 mongo-test/

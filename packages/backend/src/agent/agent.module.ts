@@ -4,11 +4,11 @@ import { AgentController } from "./agent.controller";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Agent, AgentSchema } from "./schemas/agent.schema";
 import { JwtModule } from "@nestjs/jwt";
-import * as dotenv from "dotenv";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./agent.guard";
 
-dotenv.config();
+import { config } from "../common/dotenv";
+config();
 
 @Module({
   imports: [
