@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { MainContext } from "..";
 import { useAuth } from "../../../hooks/useAuth";
+import { useCookies } from "react-cookie";
 
 export default observer(() => {
   const [loading, setLoading] = useState(true);
@@ -10,9 +11,19 @@ export default observer(() => {
   const { loadAgent, editAgent, data, setPrompt, setPromptTempature } =
     useContext(MainContext)!.agentStore;
 
+  const [, , removeCookies] = useCookies(["auth"]);
+
   const auth = useAuth();
 
-  useEffect(() => void loadAgent(auth.token), [loadAgent, auth]);
+  const handleLoad = useCallback(async () => {
+    const ok = await loadAgent(auth.token);
+
+    if (!ok) {
+      removeCookies("auth");
+    }
+  }, [loadAgent, auth, removeCookies]);
+
+  useEffect(() => void handleLoad(), [handleLoad]);
 
   const handleSubmit = useCallback(async () => {
     setLoadingButton(true);

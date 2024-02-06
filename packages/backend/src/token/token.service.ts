@@ -6,9 +6,7 @@ import { RefreshTokenService } from "./refresh.service";
 import { AgentService } from "src/agent/agent.service";
 import { Agent } from "src/agent/schemas/agent.schema";
 import { HttpService } from "@nestjs/axios";
-
-import { config } from "../common/dotenv";
-config();
+import { config } from "src/config/config";
 
 @Injectable()
 export class TokenService {
@@ -80,7 +78,7 @@ export class TokenService {
 
     const res = await this.httpService.axiosRef.request({
       method: "POST",
-      url: process.env.API_URL + "/chat/completions",
+      url: config.gptApi.url + "/chat/completions",
       headers: {
         "Content-Type": "application/json",
         Authorization: await this.refreshTokenService.getToken(),

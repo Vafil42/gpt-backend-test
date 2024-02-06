@@ -27,7 +27,6 @@ export class AgentStore {
       promptTempature: agent.promptTempature,
     };
 
-    console.log("q");
     return ok;
   };
 

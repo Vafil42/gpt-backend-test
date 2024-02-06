@@ -4,9 +4,7 @@ import { TokenModule } from "../token/token.module";
 import { EntryModule } from "../entry/entry.module";
 import { MongooseModule } from "@nestjs/mongoose";
 import { AgentApiModule } from "src/agent-api/agent-api.module";
-import { config } from "../common/dotenv";
-
-config();
+import { config } from "../config/config";
 
 @Module({
   imports: [
@@ -14,10 +12,10 @@ config();
     TokenModule,
     EntryModule,
     AgentApiModule,
-    MongooseModule.forRoot(
-      `mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`,
-      { user: process.env.MONGODB_USER, pass: process.env.MONGODB_PASS },
-    ),
+    MongooseModule.forRoot(config.mongo.url, {
+      user: config.mongo.user,
+      pass: config.mongo.pass,
+    }),
   ],
 })
 export class MainModule { }

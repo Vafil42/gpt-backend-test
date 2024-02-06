@@ -7,14 +7,13 @@ import { JwtModule } from "@nestjs/jwt";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./agent.guard";
 
-import { config } from "../common/dotenv";
-config();
+import { config } from "../config/config";
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Agent.name, schema: AgentSchema }]),
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      secret: config.secret.jwt,
       signOptions: { expiresIn: "24h" },
     }),
   ],
