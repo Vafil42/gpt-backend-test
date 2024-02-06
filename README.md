@@ -9,3 +9,15 @@
 2. Инструкции (К тебе поступило сообщение от клиента "<message>". Сформулируй ответ на это сообщение. Будь максимально вежлив)
 3. Примеры (Вот примеры удачных ответов на сообщения: (сообщение: Что такое помело. ответ: Добрый день. Извините, но я не могу вам помочь. Если у вас есть вопросы по работе банка, пожалуйста задавайте.))
 4. Контекст (Сторонняя информация которая может помочь сформулировать ответ. Например, информация о продуктах банка)
+
+### ToDo (Это не вам)
+- AgentFrontend: Add documentaion page in agent api
+- Add landing
+- Rename repo
+- Backend: add service for requests to sber api
+- Backend: do something with env error
+- Backend: add microservices
+- Backend: move token request to microservice
+- Backend: name entry to bot-entry and move to microservice
+- Backend: add site entry microsevice
+- Alive and relise project (most impotant)
