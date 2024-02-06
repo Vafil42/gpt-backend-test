@@ -11,6 +11,9 @@ export class Dialog {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Agent" })
   agent: Agent;
+
+  @Prop({ type: mongoose.Schema.Types.String, default: null })
+  userId: string | null;
 }
 
 export const DialogSchema = SchemaFactory.createForClass(Dialog);

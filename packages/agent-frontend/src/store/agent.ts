@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { apiRequest } from "../common/apiRequest";
 
 export class AgentStore {
   constructor() {
@@ -15,39 +16,32 @@ export class AgentStore {
   setPromptTempature = (value: number) => (this.data!.promptTempature = value);
 
   loadAgent = async (auth: string) => {
-    const res = await fetch(import.meta.env.BASE_URL + "api/agent-api", {
+    const { data: agent, ok } = await apiRequest({
+      additionalUrl: "agent-api",
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: auth,
-      },
+      auth,
     });
-
-    const agent = await res.json();
 
     this.data = {
       prompt: agent.prompt,
       promptTempature: agent.promptTempature,
     };
+
+    return ok;
   };
 
   editAgent = async (auth: string) => {
-    const res = await fetch(import.meta.env.BASE_URL + "api/agent-api", {
+    const { ok } = await apiRequest({
+      additionalUrl: "agent-api",
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: auth,
-      },
-      body: JSON.stringify({
+      body: {
         prompt: this.data!.prompt,
         promptTempature: this.data!.promptTempature,
-      }),
+      },
+      auth,
+      doNotParse: true,
     });
 
-    if (res.ok) {
-      return true;
-    }
-
-    return false;
+    return ok;
   };
 }

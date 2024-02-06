@@ -6,9 +6,7 @@ import { RefreshTokenService } from "./refresh.service";
 import { AgentService } from "src/agent/agent.service";
 import { Agent } from "src/agent/schemas/agent.schema";
 import { HttpService } from "@nestjs/axios";
-
-import * as dotenv from "dotenv";
-dotenv.config();
+import { config } from "src/config/config";
 
 @Injectable()
 export class TokenService {
@@ -25,6 +23,30 @@ export class TokenService {
     });
 
     if (!dialog) throw new HttpException("Dialog not found", 404);
+
+    return dialog;
+  }
+
+  async getDialogWithUserId(
+    userId: string,
+    agentLogin: string,
+  ): Promise<DialogDocument> {
+    let dialog = await this.dialogModel.findOne({ userId }, null, {
+      populate: ["agent", "messages"],
+    });
+
+    if (!dialog) {
+      const agent = await this.agentService.getAgent(agentLogin);
+
+      dialog = new this.dialogModel({
+        agent,
+        userId,
+      });
+      await dialog.save();
+    }
+
+    if (dialog.agent.login !== agentLogin)
+      throw new HttpException("Unauthorised", 401);
 
     return dialog;
   }
@@ -47,8 +69,6 @@ export class TokenService {
     dialog: DialogDocument,
     message: string,
   ): Promise<DialogDocument> {
-    console.log(dialog);
-
     dialog.messages.push({
       role: "user",
       content: message,
@@ -58,7 +78,7 @@ export class TokenService {
 
     const res = await this.httpService.axiosRef.request({
       method: "POST",
-      url: process.env.API_URL + "/chat/completions",
+      url: config.gptApi.url + "/chat/completions",
       headers: {
         "Content-Type": "application/json",
         Authorization: await this.refreshTokenService.getToken(),

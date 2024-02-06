@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { apiRequest } from "../common/apiRequest";
 
 interface Message {
   role: "user" | "assistant";
@@ -18,61 +19,49 @@ export class DialogStore {
     this.data.messages.push({ role: "user", content: message });
 
     if (!this.id) {
-      this.create(message, auth);
-      return;
+      return await this.create(message, auth);
     }
 
-    const res = await fetch(
-      import.meta.env.BASE_URL + `api/agent-api/dialog/${this.id}/message`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: auth,
-        },
-        body: JSON.stringify({
-          message,
-        }),
+    const { data: dialog, ok } = await apiRequest({
+      additionalUrl: `agent-api/dialog/${this.id}/message`,
+      method: "POST",
+      body: {
+        message,
       },
-    );
+      auth,
+    });
 
-    if (res.ok) {
-      const dialog = await res.json();
-      console.log(dialog);
+    if (ok) {
       this.data.messages = dialog.messages;
     }
 
-    return res.ok;
+    return ok;
   };
 
   create = async (message: string, auth: string) => {
-    const res = await fetch(import.meta.env.BASE_URL + "api/agent-api/dialog", {
+    const { data: dialog, ok } = await apiRequest({
+      additionalUrl: "agent-api/dialog",
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: auth,
-      },
-      body: JSON.stringify({
+      body: {
         message,
-      }),
+      },
+      auth,
     });
 
-    if (res.ok) {
-      const dialog = await res.json();
+    if (ok) {
       this.id = dialog.id;
       this.data.messages = dialog.messages;
     }
 
-    return res.ok;
+    return ok;
   };
 
   clear = async (auth: string) => {
-    await fetch(import.meta.env.BASE_URL + `api/agent-api/dialog/${this.id}`, {
+    await apiRequest({
+      additionalUrl: `agent-api/dialog/${this.id}`,
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: auth,
-      },
+      auth,
+      doNotParse: true,
     });
 
     this.data.messages = [];

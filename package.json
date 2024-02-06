@@ -5,8 +5,7 @@
   "scripts": {
     "install": "cd packages/backend && npm install && cd ../agent-frontend && npm install",
     "dev:backend": "cd packages/backend && npm run start:dev",
-    "dev:frontend": "cd packages/agent-frontend && npm run dev",
-    "dev:mongo": "docker run -d --name mongo mongo"
+    "dev:frontend": "cd packages/agent-frontend && npm run dev"
   },
   "repository": {
     "type": "git",

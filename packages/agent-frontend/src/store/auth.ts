@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { apiRequest } from "../common/apiRequest";
 
 export class AuthStore {
   constructor() {
@@ -12,21 +13,16 @@ export class AuthStore {
   setPassword = (value: string) => (this.password = value);
 
   auth = async () => {
-    const res = await fetch(import.meta.env.BASE_URL + "api/auth/login", {
+    const { ok, data } = await apiRequest({
+      additionalUrl: "auth/login",
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+      body: {
         login: this.login,
         password: this.password,
-      }),
+      },
     });
 
-    if (res.ok) {
-      const auth = await res.json();
-      return auth;
-    }
+    if (ok) return data;
 
     return null;
   };

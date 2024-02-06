@@ -8,11 +8,9 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Secret } from "./schemas/secret";
 import { Model } from "mongoose";
 import { v4 as uuidv4 } from "uuid";
-import * as dotenv from "dotenv";
 import { HttpService } from "@nestjs/axios";
 import { Interval } from "@nestjs/schedule";
-
-dotenv.config();
+import { config } from "src/config/config";
 
 @Injectable()
 export class RefreshTokenService implements OnApplicationBootstrap {
@@ -36,11 +34,11 @@ export class RefreshTokenService implements OnApplicationBootstrap {
     if (this.secretModel) await this.secretModel.findOneAndDelete();
 
     const res = await this.httpService.axiosRef.request({
-      url: process.env.REFRESH_URL,
+      url: config.gptApi.refreshUrl,
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Bearer ${process.env.REFRESH_SECRET}`,
+        Authorization: `Bearer ${config.secret.gptRefresh}`,
         RqUID: uuidv4(),
       },
       data: { scope: "GIGACHAT_API_PERS" },

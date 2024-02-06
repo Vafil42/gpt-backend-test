@@ -2,6 +2,7 @@ import { Button, Flex, Input, InputNumber, Spin } from "antd";
 import { observer } from "mobx-react-lite";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { MainContext } from "..";
+import { useAuth } from "../../../hooks/useAuth";
 import { useCookies } from "react-cookie";
 
 export default observer(() => {
@@ -10,19 +11,26 @@ export default observer(() => {
   const { loadAgent, editAgent, data, setPrompt, setPromptTempature } =
     useContext(MainContext)!.agentStore;
 
-  const [cookies] = useCookies(["auth"]);
+  const [, , removeCookies] = useCookies(["auth"]);
 
-  useEffect(
-    () => void loadAgent(cookies.auth!.token),
-    [loadAgent, cookies.auth],
-  );
+  const auth = useAuth();
+
+  const handleLoad = useCallback(async () => {
+    const ok = await loadAgent(auth.token);
+
+    if (!ok) {
+      removeCookies("auth");
+    }
+  }, [loadAgent, auth, removeCookies]);
+
+  useEffect(() => void handleLoad(), [handleLoad]);
 
   const handleSubmit = useCallback(async () => {
     setLoadingButton(true);
-    await editAgent(cookies.auth!.token);
-    await loadAgent(cookies.auth!.token);
+    await editAgent(auth.token);
+    await loadAgent(auth.token);
     setLoadingButton(false);
-  }, [editAgent, cookies.auth]);
+  }, [editAgent, auth]);
 
   useEffect(() => {
     if (data) {
