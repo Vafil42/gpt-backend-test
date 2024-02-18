@@ -21,7 +21,7 @@ export class AgentService {
   constructor(
     @InjectModel(Agent.name) private agentModel: Model<Agent>,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async create(dto: CreateAgentDto): Promise<TokenResponseInterface> {
     const existingAgent = await this.agentModel.findOne({ login: dto.login });
